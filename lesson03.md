@@ -75,8 +75,13 @@ In order to make Bulma classes defined globally, we have to exclude Bulma from w
 
 ```javascript
 // webpack.config.babel.js
- rules: [
-      { test: /\.(js|jsx)$/, use: 'babel-loader', exclude: /node_modules/ },
+output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
+},
+rules: [
+      { ... from previous },
       { 
         test: /\.css$/,
         use: [
@@ -172,7 +177,7 @@ const App = () => (
 export default App;
 ```
 
-Add a directory called `src/css` and add a file called `main.global.css`, and add the following code:
+Add a directory called `src/client/css` and add a file called `main.global.css`, and add the following code:
 
 
 in the file index.jsx, append this line after last line with import `App` module.
