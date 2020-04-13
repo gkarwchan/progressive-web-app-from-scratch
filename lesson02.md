@@ -49,7 +49,9 @@ update `tsconfig.json`
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "es6",
     "target": "es6",
     "sourceMap": true,
     "jsx": "react",
