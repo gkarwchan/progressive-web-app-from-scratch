@@ -35,10 +35,7 @@ to run the code in that lesson
 
 1. [Lesson One: webpack, webpack-dev-server and TypeScript](/lesson01.md/). 
 2. [Lesson Two: React, React-Router](/lesson02.md/). 
-2. [Lesson Two: Node, Express and server side code](/lesson02.md/).
 3. [Losson Three: CSS, CSS Framework and a basic login page](/lesson03.md).
-4. [Lesson Four: Redux, Redux-Saga](/lesson04.md).
-5. [Lesson Five: Developer Tools, Code Quality and Unit Tests](/lesson05.md).
 6. Lesson Six: Add Server Side NodeJS Code using Koa (Coming).
 7. Lesson Seven: Add Image, and fonts support (Coming).
 8. Lesson Eight: Add Isomorphic Support (Coming)
