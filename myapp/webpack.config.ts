@@ -8,6 +8,9 @@ export default {
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'dist/'
   },
+  devServer: {
+    contentBase: './',
+  },
   module: {
     rules: [
       { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },

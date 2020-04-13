@@ -128,7 +128,7 @@ npm i --save-dev webpack webpack-cli ts-node @types/node ts-loader @types/webpac
 
 Where ts-loader, is the webpack loader that use typescript to compile ES6+ into ES5.
 
-Add a new file to configure webpack, called **webpack.config.ts**.
+Add a new file to configure webpack, called **webpack.config.js**.
 
 
 ```js
@@ -226,12 +226,18 @@ ts-node can resolve the config using an environment variable called `TS_NODE_PRO
 
 ```json
 "scripts": {
-  "build": "set TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack"
+  "build": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack"
 } 
 ```
+
+P.S: If you are working on windows, replace the `env` in the script with cross-env and install the package `cross-env`.  
+
+
 Let us convert the `webpack.config.js` to `webpack.config.ts` as follows:
 
 ```ts
+// webpack.config.ts
+
 import path from 'path';
 
 export default {
@@ -252,4 +258,75 @@ export default {
     extensions: ['.ts', 'tsx', '.js']
   }
 };
+```
+
+## Setup Development environment ##
+
+To work on development environment in `webpack.config.ts`, add a setting:
+
+```ts
+mode: 'development'
+```
+### Adding sourcemap ###
+When an error occur in your browser, the browser shows the line of the code where the error happen.  
+Because webpack bundles all code together, it will be impossible to track down that line to its original file. The solution is to add source maps which is a feature of javascript itself.  
+Webpack supports different versions of sourcemap, and for the development environment we will chose this option: 
+
+```ts
+// in webpack.config.ts
+
+devtool: 'inline-source-map',
+```
+
+### Choosing a development tool: ###
+
+In order to compile as we write code, we can choose one of these two options:  
+
+1. Webpack's watch mode.
+2. webpack-dev-server.
+
+#### Webpack watch mode ####
+by specifying the option: `watch` when we call webpack, as follows:  
+
+```json
+// package.json
+
+"scripts" {
+  "build": "webpack --watch"
+}
+
+``` 
+But we are going to use a different path, which is webpack-dev-server.
+
+```sh
+npm i -D webpack-dev-server @types/webpack-dev-server
+```
+
+Add the following to `webpack.config.ts`:
+
+```ts
+// webpack.config.ts
+
+import path from 'path';
+
+devServer: {
+  contentBase: './',
+},
+
+```
+Then add the following to package.json
+
+```json
+// package.json
+
+"scripts": {
+    "build": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack",
+    "start": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack-dev-server --open"
+  }
+```
+
+Finally run the above code:  
+
+```sh
+npm start
 ```
