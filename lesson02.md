@@ -13,7 +13,7 @@ npm i --save-dev soruce-map-loader
 
 add a subfolder src/client
 add a subfolder src/client/components
-add three files: index.ts and components/app.tsx components/hello.tsx
+add three files: index.tsx and components/app.tsx components/hello.tsx
 add the following code:   
 
 ```typescript
@@ -24,16 +24,16 @@ export const Hello = (props: HelloProps) => <h1>Hello from {props.compiler} and 
 ```
 
 ```js
-// app.jsx
+// app.tsx
 import React from 'react';
 import { Hello } from './Hello';
 
-const App = () => (<h1>Hello React!</h1>);
+const App = () => <Hello compiler='typescript' framework='2.3' />;
 export default App;
 ```
 
 ```js
-// index.jsx
+// index.tsx
 import React from 'react';
 import { render } from 'react-dom';
 import App from './app';
@@ -76,33 +76,20 @@ Add `index.html` into `src/` directory, and add the following:
   </body>
 </html>
 ```
-Change webpack.config.babel as this:
+Change webpack.config.ts for the entry point:
 
-change webpack.config.babel.js for the entry point:
-
-```js
-// webpack.config.babel.js
+```ts
+// webpack.config.ts
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default {
   mode: 'development',
-  entry: [
-    './src/client',
-  ],
+  entry: ['./src/client/'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-  },
-  module: {
-    rules: [
-      { test: /\.jsx?$/, use: 'babel-loader', exclude: /node_modules/ },
-    ],
-  },
-  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
-  resolve: {
-    extensions: ['.js', '.jsx'],
+    publicPath: 'dist/'
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
@@ -111,7 +98,18 @@ export default {
     },
     historyApiFallback: true
   },
-  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+  module: {
+    rules: [
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+    ],
+  },
+  devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', 'jsx']
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: './src/index.html' })
+  ]
 };
 ```
 

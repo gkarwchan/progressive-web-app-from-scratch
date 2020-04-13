@@ -1,15 +1,20 @@
 import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default {
   mode: 'development',
-  entry: ['./src'],
+  entry: ['./src/client/'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'dist/'
   },
   devServer: {
-    contentBase: './',
+    contentBase: path.join(__dirname, 'dist'),
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    historyApiFallback: true
   },
   module: {
     rules: [
@@ -18,6 +23,9 @@ export default {
   },
   devtool: 'inline-source-map',
   resolve: {
-    extensions: ['.ts', 'tsx', '.js']
-  }
+    extensions: ['.ts', '.tsx', '.js', 'jsx']
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: './src/index.html' })
+  ]
 };
