@@ -37,14 +37,15 @@ We need to configure TypeScript in the local folder. Create a file names `tsconf
 // file tsconfig.json
 {
   "compilerOptions": {
-      "outDir": "./dist/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "target": "es5",
-      "allowSyntheticDefaultImports": true,
-      "jsx": "react",
-      "allowJs": true
-    }
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "es6",
+    "target": "es6",
+    "jsx": "react",
+    "allowJs": true
+  }
 }
 ```
 Without `tsconfig.json` file, TypeScript compiler will run on its default configuration.  
@@ -52,7 +53,7 @@ To modify the settings it is easier to create this file instead of passing those
 In the previous settings we define this:  
 
 * noImplicitAny: as we are having more strict definitions of types, with this option, we are going very strict and says that we have to inforce the types, otherwise it will raise error.
-* module: If you are targetting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`.  
+* module: If you are targeting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`.  
 
 
 Let us see typescript in action. Create a folder called src, and add two files into it: person.ts, and index.ts.
@@ -122,7 +123,7 @@ Webpack consists of the following parts:
 run the following:  
 
 ```sh
-npm i --save-dev webpack webpack-cli ts-node @types/node ts-loader
+npm i --save-dev webpack webpack-cli ts-node @types/node ts-loader @types/webpack
 ```
 
 Where ts-loader, is the webpack loader that use typescript to compile ES6+ into ES5.
@@ -132,9 +133,9 @@ Add a new file to configure webpack, called **webpack.config.ts**.
 
 ```js
 // webpack.config.js
-import path from 'path';
+const path = require('path');
 
-export default {
+module.exports = {
   mode: 'development',
   entry: ['./src'],
   output: {
@@ -195,4 +196,60 @@ Now, you can run the previous command by simply:
 
 ```sh
 npm run build
+```
+
+## Using Typescript with webpack config ##
+
+Using [node-interpret](https://github.com/gulpjs/interpret) we can write webpack config in different languages.  
+To write webpack config using typescript, we should install [ts-node](https://github.com/TypeStrong/ts-node), which we installed it already, but there is a small glitch.  
+ts-node can only understand `commonjs` module, which means we have to stuck with old configuration of typescript configuration, and we cannot use es6 module.  
+In order to fix this, we need to have a different `tsconfig` for the webpack, and in order to do that we need to install a package called `tsconfig-paths`.
+
+```sh
+npm i -D tsconfig-paths
+```
+
+Create a ts config file for webpack called: `tsconfig-for-webpack-config.json`.  
+Add the following code:  
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "esModuleInterop": true
+  }
+}
+```
+
+ts-node can resolve the config using an environment variable called `TS_NODE_PROJECT`
+
+```json
+"scripts": {
+  "build": "set TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack"
+} 
+```
+Let us convert the `webpack.config.js` to `webpack.config.ts` as follows:
+
+```ts
+import path from 'path';
+
+export default {
+  mode: 'development',
+  entry: ['./src'],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: 'dist/'
+  },
+  module: {
+    rules: [
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+    ],
+  },
+  devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.ts', 'tsx', '.js']
+  }
+};
 ```
