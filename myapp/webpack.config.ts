@@ -34,7 +34,15 @@ export default {
         test: /\.css$/,
         use: [ 'style-loader', 'css-loader' ],
         include: [/node_modules/]
-      }
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
     ],
   },
   devtool: 'inline-source-map',

@@ -220,12 +220,144 @@ export default App;
 ```
 Let us now add a Logo to the header. In order to do that we need to add a special loader to webpack that will copy images to the build output.  
 
-### file-loader ###
+### file-loader and url-loader ###
+
+file-loader is a simple loader that copy files to the build output. It resolve the `import / require() ` statements for files in the code and copy them to output.  
+
+You can use it to copy the images by importing the images in your code as you import any js file:  
+
+```js
+import img from './images/myimage.png';
+```
+And the loader will resolve the file, and copy it to the output.  
+
+Another loader is `url-loader`, which is more advanced by converting the files into [data uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) base64 strings and embed them in the output **HTML** file.  
+
+url-loader will make the bundle bigger but with fewer files, and that is a faster option for HTTP 1.1.  
+But for Http/2 more files will be served faster than Http 1, so it is not necessary to include this loader.  
+Actually keeping the files as binary is faster on HTTP/2 specially for bigger files like large images.  
+
+Another options, which is better is to use hybrid solution, by converting small files to data uri, and keep the big files.  
+
+`url-loader` provides this capabilities by giving the size limit as an option, and it falls back to `file-loader` for bigger files.  
+
+To just show an example of how to do that in webpack
+
+```js
+// this is just to show how to use url-loader
+// but we are not planning to use it
+// webpack.config.ts
+
+module: {
+    rules: [
+      // .... from previous
+      {
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+        ],
+      },
+    ],
+  },
+```
+
+If you are planning to use HTTP/2 then it is better to use `file-loader` as follows:
+
+```js
+// webpack.config.ts
+
+module: {
+    rules: [
+      // .....
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
+    ],
+  },
+```
+
+Add the `file-loader`.  
+
+```sh
+npm i -D file-loader
+```
+
+Let us add the image file into the header. In the Header component:  
+
+```js
+// components/Header/index.tsx
+....
+
+import Logo from '../../images/logo.png';
+
+const Header = () => {
+  return (
+    <nav className='navbar' aria-label='main navigation'>
+      <div className='navbar-brand'>
+        <Link className='navbar-item' to='/'>
+          <img src={Logo} />
+        </Link>
+      </div>
+      .....
+```
+Although you are going to see the Logo in the header, but you are going to encounter an error in the build, cause by TypeScript.  
+TypeScript still cannot understand import from an image file.  
+To fix this problem there are two solutions:  
+
+1. use `require` instead of `import` as follows:
+
+```js
+const logo = require('../../images/logo.png').default;
+```
+
+If you encounter an error that `require` is not defined, then you need to import `@types/node` in your packages, which I added it in the first lesson.
+
+```sh
+npm i -D @types/node
+```
+
+2. the second solution is more complicated, and I am listing it as a TypeScript tutorial.
+The second solution is to add a custom type for TypeScript.  
+In TypeScript the types should be declared using npm packages under namespace `@types`.  
+But what if you have an external library that doesn't have `@types`?. Either you should add and publish the types in npm, or you add a custom types.  
+To add a custom typing for the image (png), we can do it as follows:   
+
+* create a folder called `typings` in the same location as `tsconfig.json`.
+* either create a file called `import-png.d.ts` or create a folder `import-png` and add `index.d.ts`.
+* in that file add the following code:  
+
+```js
+declare module "*.png" {
+  const value: any;
+  export default value;
+}
+```
+* add the following to `tsconfig.json` file under compilerOptions:
+
+```json
+"typeRoots" : ["./node_modules/@types", "./typings"]
+```
+
+I am going to use the custom typings for the tutorial purpose only, and for real solution and for smaller projects that don't require custom typings is better to use `require`, but if your projects is big, and you have other custom typings, then better to add it.
+
+
+
+
 
 Add a directory called `src/client/css` and add a file called `main.global.css`, and add the following code:
 
 
-in the file index.jsx, append this line after last line with import `App` module.
+in the file `index.tsx`, append this line after last line with import `App` module.
 
 
 ```javascript
