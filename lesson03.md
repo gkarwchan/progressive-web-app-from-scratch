@@ -1,4 +1,4 @@
-# 03 - Lesson Three: Bulma, basic login page
+# 03 - Lesson Three: CSS, Bulma, Images and Assets
 
 We will continue on this project and add a CSS framework and a basic login page.
 
@@ -149,33 +149,78 @@ const Login = () => (
 export default Login;
 
 ```
+Let us add a Bulma navigation header, and let us start to organize our components in a better way.   
+
+We will add a folder called `components` that will have all represtative components.   
+
+In the folder `components` create another folder `Header` and create a file `index.tsx`.  
 
 
 
 
-```javascript
-// app.jsx
+
+```js
+
+// components/Header/index.tsx
+import * as React from 'react';
+import { Link } from 'react-router-dom';
+
+const Header = () => {
+  return (
+    <nav className='navbar' aria-label='main navigation'>
+      <div className='navbar-brand'>
+        <Link className='navbar-item' to='/'>In the now</Link>
+      </div>
+      <div className='navbar-menu'>
+        <div className='navbar-end'>
+          <div className="buttons">
+            <Link to="/login" className="button is-primary">
+              Sign In
+            </Link>
+            <Link to="/login" className="button is-light">
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export { Header }
+```
+
+Let us add the header in the main App component.
+
+```js
+// app.tsx
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import Home from './home';
-import Login from './login';
+import { BrowserRouter as Router, Switch, Link, Route } from 'react-router-dom';
+import { Header } from './components/Header';
 
+
+import { Home } from './home';
+import { Login } from './login';
 
 const App = () => (
   <Router>
     <div>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/login">Login</Link></li>
-      </ul>
+      <Header />
       <hr />
-      <Route exact path="/" component={Home} />
-      <Route path="/login" component={Login} />
+      <Switch>
+        <Route exact path='/' component={Home} />
+        <Route exact path='/login' component={Login} />
+      </Switch>
     </div>
   </Router>
-);
+)
+
 export default App;
 ```
+Let us now add a Logo to the header. In order to do that we need to add a special loader to webpack that will copy images to the build output.  
+
+### file-loader ###
 
 Add a directory called `src/client/css` and add a file called `main.global.css`, and add the following code:
 
