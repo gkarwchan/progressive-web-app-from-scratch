@@ -22,7 +22,7 @@ We are going to build a progressive web app from the scratch, step by step.
 ## Using this tutorial:
 
 This tutorial will go through building a progressive web app, step by step.  
-It is devided into lessons. Each lesson will continue from the previous one. Each lesson has a coresponding branch that has the final code after you did the whole class. So, in case you want to start Lesson4 and you are not sure that your code is up-to-date, you can checkout lessn03 and start from there.
+It is divided into lessons. Each lesson will continue from the previous one. Each lesson has a corresponding branch that has the final code after you did the whole class. So, in case you want to start Lesson4 and you are not sure that your code is up-to-date, you can checkout lesson03 and start from there.
 
 ```sh
 git checkout lesson03
@@ -36,6 +36,7 @@ to run the code in that lesson
 1. [Lesson One: webpack, webpack-dev-server and TypeScript](/lesson01.md/). 
 2. [Lesson Two: React, React-Router](/lesson02.md/). 
 3. [Lesson Three: CSS, CSS Framework , images and assets](/lesson03.md).
+4. [Lesson Four: Redux](/lesson04.md).
 6. Lesson Six: Add Server Side NodeJS Code using Koa (Coming).
 7. Lesson Seven: Add Image, and fonts support (Coming).
 8. Lesson Eight: Add Isomorphic Support (Coming)
