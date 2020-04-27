@@ -1,22 +1,19 @@
-import express from 'express';
+import Koa from 'koa';
+import Router from 'koa-router';
 
 class App {
-  public express: any;
+  public app: Koa;
 
   constructor() {
-    this.express = express();
+    this.app = new Koa();
     this.mountRoutes();
   }
 
   private mountRoutes(): void {
-    const router = express.Router()
-    router.get('/', (req, res) => {
-      res.json({
-        message: 'Hello SWorld'
-      })
-    })
-    this.express.use('/', router)
+    this.app.use(async ctx => {
+      ctx.body = 'Hello World'
+    })  
   }
 }
 
-export default new App().express;
+export default new App().app;
