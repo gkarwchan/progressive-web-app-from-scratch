@@ -6,7 +6,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack",
-    "start": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack-dev-server --open"
+    "start": "env TS_NODE_PROJECT=tsconfig-for-webpack-config.json webpack-dev-server --open",
+    "start:server": "ts-node --project config/tsconfig-server.json src/server"
   },
   "keywords": [],
   "author": "",
