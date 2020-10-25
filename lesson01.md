@@ -23,8 +23,6 @@ node_modules/
  
 
 ## TypeScript:
-TypeScript is a superset of javascript that compiles to plain JavaScript.
-
 
 #### Setup TypeScript:
 
@@ -52,9 +50,17 @@ Without `tsconfig.json` file, TypeScript compiler will run on its default config
 To modify the settings it is easier to create this file instead of passing those parameters on the command line.  
 In the previous settings we define this:  
 
-* noImplicitAny: as we are having more strict definitions of types, with this option, we are going very strict and says that we have to inforce the types, otherwise it will raise error.
-* module: If you are targeting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`.  
+* noImplicitAny: as we are having more strict definitions of types, without this option, when TS encounters an unknown type, then it will default it to **`any`**, but with this, it will raise an error. We are going very strict and says that we have to enforce the types.
+* target: the target javascript. Most browsers support ES6, so we can use ES6.
+* module: related to the **`target`** that we mentioned above. If you are targeting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`, and nowadays all modern browsers support ES6. If you omitted then it can be driven from target.  
 
+For Node, use the following:  
+
+| Node version | target |
+| --- | --- |
+| Node 8 | E2017 |
+| Node 10 | ES2018 |
+| Node 12 | ES2019 |
 
 Let us see typescript in action. Create a folder called src, and add two files into it: person.ts, and index.ts.
 Add the following code:
@@ -118,7 +124,10 @@ Webpack consists of the following parts:
 6. loaders: loaders are the tools that makes webpack a full build/bundle system. They convert ES6 to ES5 javascript, or SCSS to CSS, or image to url...etc. There is a loader for each seperate build/bundle process in a web application.
 7. plugins: plugins are extre process, that can add extra functionalites outside the code transformation process.
 
+
 #### Install and setup webpack with typescript ####
+
+We need to make webpack works with typescript, so we need to install extra packages to handle this task.  
 
 run the following:  
 
