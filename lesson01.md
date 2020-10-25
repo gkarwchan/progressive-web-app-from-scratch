@@ -209,7 +209,7 @@ npm run build
 
 ## Using Typescript with webpack config ##
 
-Using [node-interpret](https://github.com/gulpjs/interpret) we can write webpack config in different languages.  
+We can write webpack config in different languages, and one of them could be TypeScript.  
 To write webpack config using typescript, we should install [ts-node](https://github.com/TypeStrong/ts-node), which we installed it already, but there is a small glitch.  
 ts-node can only understand `commonjs` module, which means we have to stuck with old configuration of typescript configuration, and we cannot use es6 module.  
 In order to fix this, we need to have a different `tsconfig` for the webpack, and in order to do that we need to install a package called `tsconfig-paths`.
@@ -226,7 +226,8 @@ Add the following code:
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }
 ```
@@ -268,6 +269,58 @@ export default {
   }
 };
 ```
+
+#### explaining the tsconfig settings:
+The previous setting: **`esModuleInterop`** has to do with CommonJS and ES6 resolution.  
+When we want to import CommonJS module into ES6 module codebase, we have to import it as follows:  
+
+```js
+import * as moment from 'moment';
+moment();  // not compliant with es6 module spec
+```
+
+The above will be transpiled into:  
+
+```js
+const moment = require("moment");
+moment();
+```
+
+The above works fine, but it isn't compliant with es6 modules spec, because namespace in star import (moment in our case) can be only a plain object and not a function (moment() is not allowed).  
+
+
+Solution:  
+
+with `esModuleInterop` we can write es6 import as follows:
+
+```js
+import moment from 'moment';
+moment();  // compliant with es6 module spec
+```
+
+and above will be transpiled into 
+
+```js
+const moment = __importDefault(require('moment'));
+moment.default();
+```
+
+CommonJS doesn't have `default` export, so we cannot import it as :
+
+```js
+import something from 'something';
+```
+and we have to do it as 
+
+```js
+import * as something from 'something';
+```
+
+But with that setting, as you can see the CommonJS module was wrapped into an object with `default` key.  
+`import *` does the same thing as `__importDefault`.
+
+As we described `esModuleInterop`, then the other setting: **`allowSyntheticDefaultImports`** will do the same thing but just for type checking and syntax error. It won't effect the code, but just the IDE or type checker won't give an error. 
+
 
 ## Setup Development environment ##
 
