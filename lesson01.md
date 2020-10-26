@@ -23,8 +23,6 @@ node_modules/
  
 
 ## TypeScript:
-TypeScript is a superset of javascript that compiles to plain JavaScript.
-
 
 #### Setup TypeScript:
 
@@ -52,9 +50,17 @@ Without `tsconfig.json` file, TypeScript compiler will run on its default config
 To modify the settings it is easier to create this file instead of passing those parameters on the command line.  
 In the previous settings we define this:  
 
-* noImplicitAny: as we are having more strict definitions of types, with this option, we are going very strict and says that we have to inforce the types, otherwise it will raise error.
-* module: If you are targeting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`.  
+* noImplicitAny: as we are having more strict definitions of types, without this option, when TS encounters an unknown type, then it will default it to **`any`**, but with this, it will raise an error. We are going very strict and says that we have to enforce the types.
+* target: the target javascript. Most browsers support ES6, so we can use ES6.
+* module: related to the **`target`** that we mentioned above. If you are targeting ES5 or lower then use `CommonJS`, otherwise you can use `ES6`, and nowadays all modern browsers support ES6. If you omitted then it can be driven from target.  
 
+For Node, use the following:  
+
+| Node version | target |
+| --- | --- |
+| Node 8 | E2017 |
+| Node 10 | ES2018 |
+| Node 12 | ES2019 |
 
 Let us see typescript in action. Create a folder called src, and add two files into it: person.ts, and index.ts.
 Add the following code:
@@ -118,7 +124,10 @@ Webpack consists of the following parts:
 6. loaders: loaders are the tools that makes webpack a full build/bundle system. They convert ES6 to ES5 javascript, or SCSS to CSS, or image to url...etc. There is a loader for each seperate build/bundle process in a web application.
 7. plugins: plugins are extre process, that can add extra functionalites outside the code transformation process.
 
+
 #### Install and setup webpack with typescript ####
+
+We need to make webpack works with typescript, so we need to install extra packages to handle this task.  
 
 run the following:  
 
@@ -200,7 +209,7 @@ npm run build
 
 ## Using Typescript with webpack config ##
 
-Using [node-interpret](https://github.com/gulpjs/interpret) we can write webpack config in different languages.  
+We can write webpack config in different languages, and one of them could be TypeScript.  
 To write webpack config using typescript, we should install [ts-node](https://github.com/TypeStrong/ts-node), which we installed it already, but there is a small glitch.  
 ts-node can only understand `commonjs` module, which means we have to stuck with old configuration of typescript configuration, and we cannot use es6 module.  
 In order to fix this, we need to have a different `tsconfig` for the webpack, and in order to do that we need to install a package called `tsconfig-paths`.
@@ -217,7 +226,8 @@ Add the following code:
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }
 ```
@@ -259,6 +269,58 @@ export default {
   }
 };
 ```
+
+#### explaining the tsconfig settings:
+The previous setting: **`esModuleInterop`** has to do with CommonJS and ES6 resolution.  
+When we want to import CommonJS module into ES6 module codebase, we have to import it as follows:  
+
+```js
+import * as moment from 'moment';
+moment();  // not compliant with es6 module spec
+```
+
+The above will be transpiled into:  
+
+```js
+const moment = require("moment");
+moment();
+```
+
+The above works fine, but it isn't compliant with es6 modules spec, because namespace in star import (moment in our case) can be only a plain object and not a function (moment() is not allowed).  
+
+
+Solution:  
+
+with `esModuleInterop` we can write es6 import as follows:
+
+```js
+import moment from 'moment';
+moment();  // compliant with es6 module spec
+```
+
+and above will be transpiled into 
+
+```js
+const moment = __importDefault(require('moment'));
+moment.default();
+```
+
+CommonJS doesn't have `default` export, so we cannot import it as :
+
+```js
+import something from 'something';
+```
+and we have to do it as 
+
+```js
+import * as something from 'something';
+```
+
+But with that setting, as you can see the CommonJS module was wrapped into an object with `default` key.  
+`import *` does the same thing as `__importDefault`.
+
+As we described `esModuleInterop`, then the other setting: **`allowSyntheticDefaultImports`** will do the same thing but just for type checking and syntax error. It won't effect the code, but just the IDE or type checker won't give an error. 
+
 
 ## Setup Development environment ##
 
