@@ -12,7 +12,7 @@ sanitize.css is a css library that provides a [css reset](https://blog.gisspan.c
 There are many CSS reset frameworks, for example we can list the following:
 
 * [Normalize.css](https://necolas.github.io/normalize.css/).
-* [Bootstrap's Reboot](https://v4-alpha.getbootstrap.com/content/reboot/).
+* [Bootstrap's Reboot](https://getbootstrap.com/docs/4.0/content/reboot/).
 * [Sanitize.css](https://csstools.github.io/sanitize.css/).
 * Or we can just embed manually the [CSS Reset code](https://meyerweb.com/eric/tools/css/reset/).
 
