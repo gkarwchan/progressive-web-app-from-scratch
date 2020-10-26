@@ -6,4 +6,3 @@ import 'bulma/css/bulma.min.css';
 import App from './app';
 
 render(<App />, document.querySelector('#app'));
-
