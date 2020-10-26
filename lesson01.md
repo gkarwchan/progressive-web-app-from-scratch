@@ -129,10 +129,13 @@ Webpack consists of the following parts:
 
 We need to make webpack works with typescript, so we need to install extra packages to handle this task.  
 
+> P.S: On the day I was updating this document 25th-October-2000, there was a compatibility issue between webpack-dev-server 3.11, and latest version of webpack-cli 4.  
+> To Fix it, we use webpack-cli@3
+
 run the following:  
 
 ```sh
-npm i --save-dev webpack webpack-cli ts-node @types/node ts-loader @types/webpack
+npm i --save-dev webpack webpack-cli@3 ts-node @types/node ts-loader @types/webpack
 ```
 
 Where ts-loader, is the webpack loader that use typescript to compile ES6+ into ES5.
